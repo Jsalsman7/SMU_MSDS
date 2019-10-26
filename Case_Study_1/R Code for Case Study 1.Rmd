@@ -7,17 +7,17 @@ output: html_document
 
 ### Load following libraries
 
-###ggplot2, and ggthemes - visualizations
-###tidyverse
-##naniar and visdat - visualizations for missing data
-###mice and VIM - Imputation
-###GGally, ggmap,treemapify, and lattice - visualizations
-###stringr - regular expressions
-###class and klaR - classificiation functions
-###e1071 - Confusion Matrix
-###ROCR - ROC Curve
-###openintro - state to abbrevation function
-###caret - Regression
+ggplot2, and ggthemes - visualizations  
+tidyverse  
+naniar and visdat - visualizations for missing data  
+mice and VIM - Imputation  
+GGally, ggmap,treemapify, and lattice - visualizations  
+stringr - regular expressions  
+class and klaR - classificiation functions  
+e1071 - Confusion Matrix  
+ROCR - ROC Curve  
+openintro - state to abbrevation function  
+caret - Regression  
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
@@ -43,10 +43,10 @@ library(caret)
 
 ### Load data into memory from csv 
 
-###  Load Breweries from csv
-### Load Beers from csv 
-###  Merge Breweries and Beers by the Brewery
-###  Rename Names column after merging two datasets
+Load Breweries from csv  
+Load Beers from csv   
+Merge Breweries and Beers by the Brewery  
+Rename Names column after merging two datasets  
 
 ```{r }
 breweries_ds <- read.csv("/Users/jordansalsman/Desktop/Breweries.csv", strip.white = TRUE)
@@ -57,9 +57,9 @@ names(bmerged_ds)[5] <- "BeerName"
 ```
 
 ### Structures of the datasets
-### breweries_ds - Breweries in USA
-### beers_ds    - Different beer styles with ABV and IBU and Ounces
-### bmerged_ds  - Merged dataset
+breweries_ds - Breweries in USA  
+beers_ds    - Different beer styles with ABV and IBU and Ounces  
+bmerged_ds  - Merged dataset  
 
 ```{r}
 str(breweries_ds)
@@ -67,17 +67,17 @@ str(beers_ds)
 str(bmerged_ds)
 ```
 
-### Merged dataset
-### First and last 10 records from merged set
+### Merged dataset  
+First and last 10 records from merged set
 ```{r}
 head(bmerged_ds)
 tail(bmerged_ds)
 ```
 
-### Summary Statistics of both datasets
-### breweries_ds - Breweries in USA
-### beers_ds    - Different beer styles with ABV and IBU
-### bmerged_ds  - Merged dataset
+### Summary Statistics of both datasets  
+breweries_ds - Breweries in USA  
+beers_ds    - Different beer styles with ABV and IBU  
+bmerged_ds  - Merged dataset  
 
 ```{r}
 summary(breweries_ds)
@@ -86,8 +86,8 @@ summary(bmerged_ds)
 ```
 
 ### Visual Summary
-### Total Breweries per state
-### Bar Chart
+Total Breweries per state  
+Bar Chart  
 
 ```{r}
 b_states <- breweries_ds %>% group_by(State) %>% count() %>% arrange(desc(n))
@@ -110,8 +110,8 @@ ggplot(b_states, aes(x=State, y=n)) +
   legend.title = element_text(size = rel(0.2)))
 ```
 
-### Heat Map of Breweries per state
-### More Visual Summary
+### More Visual Summary  
+Heat Map of Breweries per state
 ```{r}
 states <- map_data("state")
 states$region <- state2abbr(states$region)
@@ -124,9 +124,9 @@ ggplot() +
 ```
 
 ### Missing Values along State Variable
-### breweris_ds - Breweries in USA
-### beers_ds    - Different beer styles with ABV and IBU
-### Not randomly missing throughout
+breweris_ds - Breweries in USA  
+beers_ds    - Different beer styles with ABV and IBU  
+---Not randomly missing throughout
 ```{r}
 beer_ounces <- beers_ds
 beer_ounces$Ounces <- as.factor(beer_ounces$Ounces)
@@ -145,11 +145,11 @@ gg_miss_var(bmerged_ds,facet=State)+
 
 
 ### Imputations
-### 62 records doens't have IBU and SBV both - these are deleted
-### Total records to process 2410-62 =  2348
-### Prediction is required on 943 missing IBU
-### Total records with IBU is 1405
-### Replacing with Linear Regression Imputations
+62 records doens't have IBU and SBV both - these are deleted  
+Total records to process 2410-62 =  2348  
+Prediction is required on 943 missing IBU  
+Total records with IBU is 1405  
+Replacing with Linear Regression Imputations  
 
 ```{r}
 bmerged_final_ds <- bmerged_ds %>% filter(!is.na(ABV) | !is.na(IBU))
@@ -232,7 +232,7 @@ print(imputed_df[1569,])
 
 
 ### Distribution of ABV
-### Boxplot ABV
+Boxplot ABV
 ```{r}
 ibu_by_states <- imputed_df %>% group_by(State) %>%  arrange(desc(ABV))
 ibu_by_states$State <- factor(ibu_by_states$State, levels = unique(ibu_by_states$State)) 
@@ -263,7 +263,7 @@ print(imputed_df[1569,])
 ```
 
 ### Distribution of IBU
-### Boxplot IBU
+Boxplot IBU
 ```{r}
 ibu_by_states <- imputed_df  %>% group_by(State) %>%  arrange(desc(IBU))
 ibu_by_states$State <- factor(ibu_by_states$State, levels = unique(ibu_by_states$State)) 
@@ -285,9 +285,8 @@ ibu_by_states %>% ggplot(aes(y=IBU,x=State)) +
                   legend.title = element_text(size = rel(0.2)))
 ```
 
-
-### density plot and Histogram of ABV Distribition
 ### Summary Statistics of ABV
+Density plot and Histogram of ABV Distribition
 
 ```{r}
 imputed_df %>% ggplot(aes(x=ABV, fill = State)) +
@@ -347,8 +346,8 @@ cor(imputed_df$ABV,imputed_df$IBU)
 
 
 ### KNN with Cross-validation and K-Tuning
-### Confusion Matrix
-### K Hyper-Parameter tuning plot
+Confusion Matrix  
+K Hyper-Parameter tuning plot
 ```{r}
 library(e1071)
 imputed_df$Style <- toupper(imputed_df$Style)
@@ -402,8 +401,8 @@ CM
 
 
 ### Further exploration
-### Separating Beers into known Light and Dark
-### Only Beers that are definitely Light or Dark are used
+Separating Beers into known Light and Dark  
+---Only Beers that are definitely Light or Dark are used
 
 ```{r}
 imputed_df$Style <- toupper(imputed_df$Style)
@@ -428,8 +427,8 @@ color <- rbind(Blonde,Light,Porter,Stout,Dark,Black,Cream,Shandy)
 
 
 ### Using Naive Bayes to classify Light Vs. Dark Beers
-### ROC Curve plot
-### Confusion Matrix
+ROC Curve plot  
+Confusion Matrix
 
 ```{r}
 iterations = 100
